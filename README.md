@@ -20,3 +20,28 @@ Controlla se potrebbero essere possibili altre connessioni tra i punti. Per farl
 ### generate_map(self, n)
 Crea la mappa generando inzialmente n punti e in seguito seleziona un punto casuale tra quelli generati e cerca un segmento con find_connection(self, p, matrix) finchè ci sono possibili connessioni da aggiungere alla matrice dei segmenti.
 ## class Tree
+### __init__(self, map)
+Inizializza MST, un dizionario di liste inizialmente vuoto, che contiene gli archi selezionati durante la ricerca dell'albero di copertura a peso minimo e inoltre inizializzo una matrice simmetrica rispetto alla diagonale contenente dei pesi positivi generati casualmente quando nella matrice dei segmenti della classe Map l'arco ij ha valore 1, altrimenti il peso che gli viene assegnato è 0.
+### primsAlgorithm(self, map)
+Sceglie un nodo casuale e lo visita, in seguito visita il nodo 'j' tale che non é ancora stato visitato e che l'arco 'ij' ha il peso minore possibile con 'i' visitato. In seguito inserisce tale arco non orientato nel dizionario MST.
+## class Variable 
+### __init__(self, tree)
+Inizializza un dizionario di liste che contiene i vicini di ogni nodo, un array vuoto dove inserire i genitori di ogni nodo e un dizionario di liste dove inserire i figli di ogni nodo. 
+## class Constraint
+### respected_constraint(self, di, dj)
+Controlla se i valori dei domini di due diverse variabili sono diversi, se lo sono allora ritorna True, altrimenti False
+## class CSP
+### __init__(self, tree)
+Genera X di tipo Variable, C di tipo Constraint e inoltre genera un dizionario di liste contenente il dominio dei colori di ogni variabile e crea un array che contiene l'assegnazione del colore delle variabili.
+### topologicalSortUtil(self, v, visited, stack)
+Visita il nodo v, scorre tutti i suoi vicini e controlla se sono già stati visitati, se non lo sono allora: segna che il genitore del nodo selezionato tra i vicini, i, è v e che il figlio di v è i e inoltre viene richiamato topologicalSortUtil(i,visited,stack). Se inece sono già stati visitati tutti i vicini del nodo v allora viene inserito in cima all'array stack il nodo v.
+### topologicalSort(self, root)
+Crea un array di zeri che indica se sono stati visitati o meno i vari nodi (1 se sono stati visitati), un array vuoto dove inserire poi l'ordine topologico dei nodi e infine chiamo topologicalSortUtil(root, visited, stack)
+### check_domain(self, di, i, j)
+Controlla se, assunto il valore di del dominio del nodo i, esiste almeno un valore del dominio del nodo j che rispetti il vincolo di soddisfacimento, e si salva nell'array remove_fromDomain quali valori del dominio di j non rispettano il vincolo.
+### revise(self, i, j)
+Controlla con check_domain(di, i, j) tutti i possibili valori del dominio del nodo i e se non esiste almeno un valore nel dominio di j che rispetta il vincolo di soddisfacimento allora l'arco ij non si può rendere consistente, altrimenti, se invece è consistente o lo si può rendere tale, si rimuovono dal dominio di j i valori che impedirebbero il soddisfacimento dei vincoli. Infine ritorna se ij è consistente e se sono stati tolti dei valori dal dominio di j.
+### make_arc_consistent(self, parent, child)
+Controlla se l'arco parent-child è consistente, se non lo è ritorna False, in seguito se sono state apportate modifiche al dominio child e se il nodo child ha dei figli allora viene chiamato make_arc_consistent anche su di essi.
+### tree_CSP_solver(self)
+Sceglie un nodo casuale come radice, fa l'ordine topologico dei nodi, controlla se gli tutti gli archi sono o possono essere resi consistenti, e a partire dalla radice fino alle foglie dell'albero assegna il primo valore consistente disponibile all'interno del dominio.
